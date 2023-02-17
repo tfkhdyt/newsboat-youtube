@@ -1,4 +1,31 @@
+use std::fs::OpenOptions;
+use std::io::Write;
+
 use serde_json::Value;
+
+pub fn parse_handle(url: String) -> Result<String, String> {
+    if !url.contains('@') {
+        return Err("Invalid url, should contains @".to_string());
+    }
+
+    let token: Vec<&str> = url.split('@').collect();
+    let handle: String = match token[1].parse() {
+        Ok(result) => result,
+        Err(_) => return Err("Failed to parse token to string".to_string()),
+    };
+
+    let cleaned_handle = remove_symbols(handle.as_str());
+
+    if cleaned_handle.len() < 3 {
+        return Err("Handle is invalid".to_string());
+    }
+
+    return Ok(cleaned_handle);
+}
+
+fn remove_symbols(s: &str) -> String {
+    s.chars().filter(|c| c.is_alphanumeric()).collect()
+}
 
 #[tokio::main]
 pub async fn fetch_yt_api(
@@ -12,4 +39,13 @@ pub async fn fetch_yt_api(
     let channel_name = &resp["items"][0]["snippet"]["title"].as_str().unwrap();
 
     Ok((channel_id.to_string(), channel_name.to_string()))
+}
+
+pub fn append_to_file(file_name: &str, text: &str) -> std::io::Result<()> {
+    let mut file = OpenOptions::new()
+        .append(true)
+        .create(true)
+        .open(file_name)?;
+    file.write_all(text.as_bytes())?;
+    Ok(())
 }
