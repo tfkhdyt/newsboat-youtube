@@ -38,16 +38,23 @@ fn main() {
                 let file = File::open(filename).unwrap();
                 let reader = BufReader::new(file);
 
+                let mut is_duplicate = false;
+
                 for (_, line) in reader.lines().enumerate() {
                     let line = line.unwrap(); // Ignore errors.
                     if line.contains(&channel_id) {
                         println!("{channel_name} is already added!");
+                        is_duplicate = true;
                         break;
                     }
                 }
 
                 let mut input = String::new();
-                print!("Do you want to add this feed? (Y/n): ");
+                if is_duplicate {
+                    print!("Do you want to add this feed again? (Y/n): ");
+                } else {
+                    print!("Do you want to add this feed? (Y/n): ");
+                }
                 io::stdout().flush().ok().expect("Could not flush stdout");
                 io::stdin()
                     .read_line(&mut input)
