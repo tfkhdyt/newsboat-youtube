@@ -6,6 +6,9 @@ use newsboat_youtube::{append_to_file, fetch_yt_api, parse_handle};
 use std::process;
 
 fn main() {
+    dotenv::dotenv().ok();
+
+    let api_key = std::env::var("API_KEY").expect("API_KEY must be set");
     let cli = Cli::parse();
 
     match &cli.command {
@@ -15,10 +18,11 @@ fn main() {
                     eprintln!("Error: {err}");
                     process::exit(1);
                 });
-                let (channel_id, channel_name) = fetch_yt_api(&handle).unwrap_or_else(|err| {
-                    eprintln!("Error: {err}");
-                    process::exit(1);
-                });
+                let (channel_id, channel_name) =
+                    fetch_yt_api(&handle, &api_key).unwrap_or_else(|err| {
+                        eprintln!("Error: {err}");
+                        process::exit(1);
+                    });
 
                 let feed = format!("https://www.youtube.com/feeds/videos.xml?channel_id={channel_id} 'youtube' '{channel_name}'\n");
 

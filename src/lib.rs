@@ -30,8 +30,8 @@ fn remove_symbols(s: &str) -> String {
 #[tokio::main]
 pub async fn fetch_yt_api(
     yt_handle: &String,
+    api_key: &String,
 ) -> Result<(String, String), Box<dyn std::error::Error>> {
-    let api_key = "AIzaSyC_6P7NiL2zXoO9VQKgoANBcpZqhRTjFl4";
     let resp = reqwest::get(format!("https://youtube.googleapis.com/youtube/v3/search?part=id,snippet&q={yt_handle}&type=channel&key={api_key}"))
         .await?.json::<Value>().await?;
 
