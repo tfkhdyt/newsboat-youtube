@@ -33,15 +33,16 @@ fn main() {
                 println!("Channel ID    : {channel_id}");
                 println!("Channel Name  : {channel_name}\n");
 
-                let mut is_confirmed = String::new();
-
+                let mut input = String::new();
                 print!("Do you want to add this feed? (Y/n): ");
                 io::stdout().flush().ok().expect("Could not flush stdout");
                 io::stdin()
-                    .read_line(&mut is_confirmed)
+                    .read_line(&mut input)
                     .expect("Failed to read line");
 
-                if is_confirmed.to_lowercase().trim() == "y" || is_confirmed.trim() == "" {
+                let is_confirmed = input.to_lowercase().trim() == "y" || input.trim() == "";
+
+                if is_confirmed {
                     match append_to_file("yt_url.txt", feed.as_str()) {
                         Ok(_) => {
                             println!(
