@@ -3,7 +3,10 @@ mod args;
 use args::{Cli, Commands};
 use clap::Parser;
 use newsboat_youtube::{append_to_file, fetch_yt_api, parse_handle};
-use std::process;
+use std::{
+    io::{self, Write},
+    process,
+};
 
 fn main() {
     dotenv::dotenv().ok();
@@ -26,20 +29,29 @@ fn main() {
 
                 let feed = format!("https://www.youtube.com/feeds/videos.xml?channel_id={channel_id} 'youtube' '{channel_name}'\n");
 
-                println!("Handle: {handle}");
-                println!("Channel ID: {channel_id}");
-                println!("Channel Name: {channel_name}");
-                // println!("Feed: {feed}");
+                println!("Handle        : @{handle}");
+                println!("Channel ID    : {channel_id}");
+                println!("Channel Name  : {channel_name}\n");
 
-                match append_to_file("yt_url.txt", feed.as_str()) {
-                    Ok(_) => {
-                        println!(
-                            "{channel_name} feed has been successfully added to newsboat urls"
-                        );
-                    }
-                    Err(err) => {
-                        eprintln!("Error: {err}");
-                        process::exit(1);
+                let mut is_confirmed = String::new();
+
+                print!("Do you want to add this feed? (Y/n): ");
+                io::stdout().flush().ok().expect("Could not flush stdout");
+                io::stdin()
+                    .read_line(&mut is_confirmed)
+                    .expect("Failed to read line");
+
+                if is_confirmed.to_lowercase().trim() == "y" || is_confirmed.trim() == "" {
+                    match append_to_file("yt_url.txt", feed.as_str()) {
+                        Ok(_) => {
+                            println!(
+                                "{channel_name} feed has been successfully added to newsboat urls"
+                            );
+                        }
+                        Err(err) => {
+                            eprintln!("Error: {err}");
+                            process::exit(1);
+                        }
                     }
                 }
             }
