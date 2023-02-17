@@ -27,7 +27,7 @@ fn main() {
                         process::exit(1);
                     });
 
-                let feed = format!("https://www.youtube.com/feeds/videos.xml?channel_id={channel_id} 'youtube' '{channel_name}'\n");
+                let feed = format!("https://www.youtube.com/feeds/videos.xml?channel_id={channel_id} \"youtube\" \"{channel_name}\"\n");
 
                 println!("Handle        : @{handle}");
                 println!("Channel ID    : {channel_id}");
