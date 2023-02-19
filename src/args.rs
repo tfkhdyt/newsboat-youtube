@@ -2,6 +2,7 @@ use clap::{Parser, Subcommand};
 
 #[derive(Debug, Parser)]
 #[command(author, version, about, long_about = None)]
+/// Manage your Newsboat YouTube RSS Feed link easily
 pub struct Cli {
     #[command(subcommand)]
     pub command: Option<Commands>,
