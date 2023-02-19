@@ -2,7 +2,7 @@ use serde_json::Value;
 use std::fs::OpenOptions;
 use std::io::Write;
 
-pub fn parse_handle(url: String) -> Result<String, String> {
+pub fn parse_handle(url: &String) -> Result<String, String> {
     if !url.contains('@') {
         return Err("Invalid url, should contains @".to_string());
     }
