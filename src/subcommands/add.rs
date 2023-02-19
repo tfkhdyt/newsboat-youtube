@@ -8,7 +8,7 @@ use newsboat_youtube;
 
 pub fn execute(url: &str, api_key: &String, filename: &str) -> Result<String, String> {
     let handle = newsboat_youtube::parse_handle(url)?;
-    let (channel_id, channel_name) = match newsboat_youtube::fetch_yt_api(&handle, &api_key) {
+    let (channel_id, channel_name) = match newsboat_youtube::fetch_yt_api(&handle, api_key) {
         Ok(v) => v,
         Err(err) => return Err(err.to_string()),
     };
@@ -43,7 +43,7 @@ pub fn execute(url: &str, api_key: &String, filename: &str) -> Result<String, St
     } else {
         print!("Do you want to add this feed? (Y/n): ");
     }
-    io::stdout().flush().ok().expect("Could not flush stdout");
+    io::stdout().flush().expect("Could not flush stdout");
     io::stdin()
         .read_line(&mut input)
         .expect("Failed to read line");
@@ -61,5 +61,3 @@ pub fn execute(url: &str, api_key: &String, filename: &str) -> Result<String, St
         Ok("".to_string())
     }
 }
-
-
