@@ -1,6 +1,6 @@
 use serde_json::Value;
-use std::fs::OpenOptions;
-use std::io::Write;
+use std::fs::{File, OpenOptions};
+use std::io::{BufRead, BufReader, Write};
 
 pub fn parse_handle(url: &str) -> Result<String, String> {
     if !url.contains('@') {
@@ -51,4 +51,14 @@ pub fn append_to_file(file_name: &str, text: &str) -> std::io::Result<()> {
         .open(file_name)?;
     file.write_all(text.as_bytes())?;
     Ok(())
+}
+
+pub fn check_duplicate(reader: BufReader<File>, channel_id: String) -> bool {
+    for (_, line) in reader.lines().enumerate() {
+        let line = line.unwrap(); // Ignore errors.
+        if line.contains(&channel_id) {
+            return true;
+        }
+    }
+    false
 }

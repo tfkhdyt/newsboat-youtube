@@ -1,10 +1,10 @@
 use std::{
     fs::File,
-    io::{self, BufRead, BufReader, Write},
+    io::{self, BufReader, Write},
     path::Path,
 };
 
-use newsboat_youtube;
+use newsboat_youtube::{self, check_duplicate};
 
 pub fn execute(url: &str, api_key: &String, filename: &str) -> Result<String, String> {
     let handle = newsboat_youtube::parse_handle(url)?;
@@ -25,24 +25,16 @@ pub fn execute(url: &str, api_key: &String, filename: &str) -> Result<String, St
 
     let file = File::open(filename).unwrap();
     let reader = BufReader::new(file);
-
-    let mut is_duplicate = false;
-
-    for (_, line) in reader.lines().enumerate() {
-        let line = line.unwrap(); // Ignore errors.
-        if line.contains(&channel_id) {
-            println!("{channel_name} is already added!");
-            is_duplicate = true;
-            break;
-        }
-    }
-
+    let is_duplicate = check_duplicate(reader, channel_id);
     let mut input = String::new();
+
     if is_duplicate {
+        println!("{channel_name} is already added!");
         print!("Do you want to add this feed again? (Y/n): ");
     } else {
         print!("Do you want to add this feed? (Y/n): ");
     }
+
     io::stdout().flush().expect("Could not flush stdout");
     io::stdin()
         .read_line(&mut input)
