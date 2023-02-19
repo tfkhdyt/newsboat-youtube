@@ -18,9 +18,12 @@ fn main() {
     let filename = "yt_url.txt";
 
     match &cli.command {
-        Some(Commands::Add { urls }) => {
+        Some(Commands::Add {
+            urls,
+            no_confirmation,
+        }) => {
             for url in urls {
-                let result = match add::execute(url, &api_key, filename) {
+                let result = match add::execute(url, &api_key, filename, *no_confirmation) {
                     Ok(v) => v,
                     Err(err) => {
                         eprintln!("{}", err);
