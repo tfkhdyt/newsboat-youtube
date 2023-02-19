@@ -8,7 +8,7 @@ use newsboat_youtube;
 
 pub fn execute(url: &String, api_key: &String, filename: &str) -> Result<String, String> {
     let handle = newsboat_youtube::parse_handle(url)?;
-    let (channel_id, channel_name) = match newsboat_youtube::fetch_yt_api(&handle, &api_key) {
+    let (channel_id, channel_name) = match newsboat_youtube::fetch_yt_api(&handle, api_key) {
         Ok(v) => v,
         Err(err) => return Err(err.to_string()),
     };

@@ -2,7 +2,7 @@ use serde_json::Value;
 use std::fs::OpenOptions;
 use std::io::Write;
 
-pub fn parse_handle(url: &String) -> Result<String, String> {
+pub fn parse_handle(url: &str) -> Result<String, String> {
     if !url.contains('@') {
         return Err("Invalid url, should contains @".to_string());
     }
@@ -19,7 +19,7 @@ pub fn parse_handle(url: &String) -> Result<String, String> {
         return Err("Handle is invalid".to_string());
     }
 
-    return Ok(cleaned_handle);
+    Ok(cleaned_handle)
 }
 
 fn remove_symbols(s: &str) -> String {
