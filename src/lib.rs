@@ -53,10 +53,10 @@ pub fn append_to_file(file_name: &str, text: &str) -> std::io::Result<()> {
     Ok(())
 }
 
-pub fn check_duplicate(reader: BufReader<File>, channel_id: String) -> bool {
+pub fn check_duplicate(reader: BufReader<File>, channel_id: &String) -> bool {
     for (_, line) in reader.lines().enumerate() {
         let line = line.unwrap(); // Ignore errors.
-        if line.contains(&channel_id) {
+        if line.contains(channel_id) {
             return true;
         }
     }

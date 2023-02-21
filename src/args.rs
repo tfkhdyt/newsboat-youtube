@@ -15,8 +15,8 @@ pub enum Commands {
         /// YouTube Channel URLs (Example: https://youtube.com/@tfkhdyt)
         urls: Vec<String>,
 
-        /// Skip confirmation
-        #[arg(short = 'y', long)]
-        no_confirmation: bool,
+        /// Print all process verbosely
+        #[arg(short = 'v', long)]
+        verbose: bool,
     },
 }

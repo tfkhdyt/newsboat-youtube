@@ -19,34 +19,17 @@ fn main() {
     let filename = "yt_url.txt";
 
     match &cli.command {
-        Some(Commands::Add {
-            urls,
-            no_confirmation,
-        }) => {
-            if *no_confirmation {
-                urls.par_iter().for_each(|url| {
-                    let result = match add::execute(url, &api_key, filename, *no_confirmation) {
-                        Ok(v) => v,
-                        Err(err) => {
-                            eprintln!("Error: {}", err);
-                            process::exit(1);
-                        }
-                    };
-                    println!("{}", result);
-                });
-            } else {
-                urls.iter().for_each(|url| {
-                    let result = match add::execute(url, &api_key, filename, *no_confirmation) {
-                        Ok(v) => v,
-                        Err(err) => {
-                            eprintln!("Error: {}", err);
-                            process::exit(1);
-                        }
-                    };
-                    println!("{}", result);
-                });
-            }
-        }
+        Some(Commands::Add { urls, verbose }) => urls.par_iter().for_each(|url| {
+            let result = match add::execute(url, &api_key, filename, *verbose) {
+                Ok(v) => v,
+                Err(err) => {
+                    eprintln!("Error: {}", err);
+                    process::exit(1);
+                }
+            };
+            println!("{}", result);
+        }),
+
         None => {}
     }
 }

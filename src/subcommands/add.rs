@@ -1,8 +1,4 @@
-use std::{
-    fs::File,
-    io::{self, BufReader, Write},
-    path::Path,
-};
+use std::{fs::File, io::BufReader, path::Path};
 
 use newsboat_youtube::{self, check_duplicate};
 
@@ -10,7 +6,7 @@ pub fn execute(
     url: &str,
     api_key: &String,
     filename: &str,
-    no_confirmation: bool,
+    verbose: bool,
 ) -> Result<String, String> {
     let handle = newsboat_youtube::parse_handle(url)?;
     let (channel_id, channel_name) = match newsboat_youtube::fetch_yt_api(&handle, api_key) {
@@ -20,45 +16,36 @@ pub fn execute(
 
     let feed = format!("https://www.youtube.com/feeds/videos.xml?channel_id={channel_id} \"youtube\" \"{channel_name}\"\n");
 
-    println!("Handle        : @{handle}");
-    println!("Channel ID    : {channel_id}");
-    println!("Channel Name  : {channel_name}");
-
     if !Path::new(filename).exists() {
         File::create(filename).unwrap();
     }
 
-    let mut is_confirmed = false;
+    let file = File::open(filename).unwrap();
+    let reader = BufReader::new(file);
+    let is_duplicate = check_duplicate(reader, &channel_id);
 
-    if !no_confirmation {
-        let file = File::open(filename).unwrap();
-        let reader = BufReader::new(file);
-        let is_duplicate = check_duplicate(reader, channel_id);
-        let mut input = String::new();
-
-        if is_duplicate {
-            println!("{channel_name} is already added!");
-            print!("Do you want to add this feed again? (Y/n): ");
-        } else {
-            print!("Do you want to add this feed? (Y/n): ");
+    if is_duplicate {
+        if verbose {
+            return Ok(format!(
+                "{channel_name} ({channel_id}) is already in the feed list. Skipping..."
+            ));
         }
-
-        io::stdout().flush().expect("Could not flush stdout");
-        io::stdin()
-            .read_line(&mut input)
-            .expect("Failed to read line");
-
-        is_confirmed = input.to_lowercase().trim() == "y" || input.trim() == "";
+        return Ok("".to_string());
     }
 
-    if is_confirmed || no_confirmation {
-        match newsboat_youtube::append_to_file(filename, feed.as_str()) {
-            Ok(_) => Ok(format!(
-                "{channel_name} feed has been successfully added to newsboat urls"
-            )),
+    if verbose {
+        return match newsboat_youtube::append_to_file(filename, feed.as_str()) {
+            Ok(_) => {
+                if verbose {
+                    Ok(format!(
+                        "{channel_name} feed has been successfully added to newsboat urls"
+                    ))
+                } else {
+                    Ok("".to_string())
+                }
+            }
             Err(err) => Err(err.to_string()),
-        }
-    } else {
-        Ok("".to_string())
+        };
     }
+    Ok("".to_string())
 }
