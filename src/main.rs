@@ -7,7 +7,7 @@ use std::process;
 use args::{Cli, Commands};
 use clap::Parser;
 use config::Config;
-use rayon::prelude::{IntoParallelRefIterator, ParallelIterator};
+use rayon::prelude::*;
 use subcommands::add;
 
 fn main() {
