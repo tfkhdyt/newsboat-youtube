@@ -18,5 +18,10 @@ pub enum Commands {
         /// Print all process verbosely
         #[arg(short = 'v', long)]
         verbose: bool,
+
+        /// API key to fetch channel id from YouTube Data API v3. You can also set it via
+        /// environment variable "NBYT_API_KEY"
+        #[arg(short = 'k', long)]
+        api_key: Option<String>,
     },
 }
