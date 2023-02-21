@@ -21,19 +21,17 @@ fn main() {
         Some(Commands::Add {
             urls,
             no_confirmation,
-        }) => {
-            for url in urls {
-                let result = match add::execute(url, &api_key, filename, *no_confirmation) {
-                    Ok(v) => v,
-                    Err(err) => {
-                        eprintln!("{}", err);
-                        process::exit(1);
-                    }
-                };
+        }) => urls.iter().for_each(|url| {
+            let result = match add::execute(url, &api_key, filename, *no_confirmation) {
+                Ok(v) => v,
+                Err(err) => {
+                    eprintln!("Error: {}", err);
+                    process::exit(1);
+                }
+            };
 
-                println!("{}", result);
-            }
-        }
+            println!("{}\n", result);
+        }),
         None => {}
     }
 }
