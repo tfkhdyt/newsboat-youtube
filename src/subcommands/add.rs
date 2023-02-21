@@ -22,7 +22,7 @@ pub fn execute(
 
     println!("Handle        : @{handle}");
     println!("Channel ID    : {channel_id}");
-    println!("Channel Name  : {channel_name}\n");
+    println!("Channel Name  : {channel_name}");
 
     if !Path::new(filename).exists() {
         File::create(filename).unwrap();
