@@ -38,7 +38,7 @@ pub fn execute(
             Ok(_) => {
                 if verbose {
                     Ok(format!(
-                        "{channel_name} feed has been successfully added to newsboat urls"
+                        "{channel_name} ({channel_id}) feed has been successfully added to newsboat urls"
                     ))
                 } else {
                     Ok("".to_string())
