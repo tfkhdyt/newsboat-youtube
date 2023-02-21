@@ -7,7 +7,7 @@ pub struct Config {
 impl Config {
     pub fn new() -> Self {
         Self {
-            api_key: env::var("API_KEY").expect("API_KEY must be set"),
+            api_key: env::var("NBYT_API_KEY").expect("NBYT_API_KEY must be set"),
         }
     }
 
